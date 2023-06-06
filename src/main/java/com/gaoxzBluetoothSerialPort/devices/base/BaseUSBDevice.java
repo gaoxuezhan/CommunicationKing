@@ -10,14 +10,19 @@ import javax.microedition.io.StreamConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BaseUSBDevice {
     protected String desiredPortName;
     protected SerialPort port;
+    protected SerialPortDataListener serialPortDataListener;
 
     public BaseUSBDevice(String desiredPortName){
         this.desiredPortName = desiredPortName;
-
+        init();
+    }
+    public void init(){
         SerialPort selectedPort = null;
         SerialPort[] ports = SerialPort.getCommPorts();
         for (SerialPort port : ports) {
@@ -38,6 +43,8 @@ public class BaseUSBDevice {
                 port.setParity(SerialPort.NO_PARITY);
                 port.setNumDataBits(8);
                 port.setNumStopBits(SerialPort.ONE_STOP_BIT);
+                this.setSerialPortDataListener(this.serialPortDataListener);
+
             } else {
                 System.out.println("Failed to open the serial port.");
             }
@@ -47,7 +54,31 @@ public class BaseUSBDevice {
     }
 
     public void setSerialPortDataListener(SerialPortDataListener serialPortDataListener){
-        port.addDataListener(serialPortDataListener);
+        this.serialPortDataListener = serialPortDataListener;
+        if(this.port != null && this.serialPortDataListener != null) {
+            this.port.addDataListener(this.serialPortDataListener);
+        }
+    }
+
+    public void runWithReconnect() {
+         // 设置定时器，每隔一定时间重新连接此设备
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // 检测串口连接状态
+
+                if(port == null){
+                    System.out.println("RoomWeatherSensor connecting...");
+                    init();
+                }else {
+                    System.out.println("RoomWeatherSensor Reconnecting...");
+                    // 尝试重新连接设备
+                    port.closePort();
+                    port.openPort();
+                }
+            }
+        }, 0, 60000); // 每隔60秒主动重新连接
     }
 }
 

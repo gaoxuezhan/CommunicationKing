@@ -51,40 +51,51 @@ public class RoomWeatherSenser extends BaseUSBDevice {
             @Override
             public void serialEvent(SerialPortEvent event) {
                 if (event.getEventType() == SerialPort.LISTENING_EVENT_DATA_AVAILABLE) {
-                    byte[] newData = new byte[port.bytesAvailable()];
-                    int numRead = port.readBytes(newData, newData.length);
-                    String data = new String(newData);
-                    System.out.println(data);
+                    try {
+                        byte[] newData = new byte[port.bytesAvailable()];
+                        int numRead = port.readBytes(newData, newData.length);
+                        String data = new String(newData);
+                        System.out.println(data);
 
-                    if(data.indexOf('\n') == -1){
-                        return;
-                    }
+                        if (data.indexOf('\n') == -1) {
+                            return;
+                        }
 
-                    if(data.startsWith("humidity") == true){
-                        // 截取换行符前面的子字符串
-                        data = data.substring(0, data.indexOf('\n'));
-                        data = data.replace("humidity:", "");
-                        roomHumidity.turn(data);
-                    }
-                    if(data.startsWith("temperature") == true){
-                        // 截取换行符前面的子字符串
-                        data = data.substring(0, data.indexOf('\n'));
-                        data = data.replace("temperature:", "");
-                        roomTemperature.turn(data);
-                    }
-                    if(data.startsWith("pressure") == true){
-                        // 截取换行符前面的子字符串
-                        data = data.substring(0, data.indexOf('\n'));
-                        data = data.replace("pressure:", "");
-                        data = data.replace("\n", "");
-                        data = data.replace("\r", "");
-                        data = data.substring(0, data.length()-2) + "." + data.substring(data.length() - 2);
-                        roomPressure.turn(data);
+                        if (data.startsWith("humidity") == true) {
+                            // 截取换行符前面的子字符串
+                            data = data.substring(0, data.indexOf('\n'));
+                            data = data.replace("humidity:", "");
+                            roomHumidity.turn(data);
+                        }
+                        if (data.startsWith("temperature") == true) {
+                            // 截取换行符前面的子字符串
+                            data = data.substring(0, data.indexOf('\n'));
+                            data = data.replace("temperature:", "");
+                            roomTemperature.turn(data);
+                        }
+                        if (data.startsWith("pressure") == true) {
+                            // 截取换行符前面的子字符串
+                            data = data.substring(0, data.indexOf('\n'));
+                            data = data.replace("pressure:", "");
+                            data = data.replace("\n", "");
+                            data = data.replace("\r", "");
+                            data = data.substring(0, data.length() - 2) + "." + data.substring(data.length() - 2);
+                            roomPressure.turn(data);
+                        }
+                    }catch (Exception e) {
+                        System.out.println("Error reading data: " + e.getMessage());
+                        // 重新连接设备
+                        if (!port.isOpen()) {
+                            System.out.println("RoomWeatherSensor disconnected. Reconnecting...");
+                            port.openPort();
+                        }
                     }
                 }
             }
         };
-        super.port.addDataListener(listener);
+        // super.port.addDataListener(listener);
+        this.setSerialPortDataListener(listener);
+        this.runWithReconnect();
     }
 
 }

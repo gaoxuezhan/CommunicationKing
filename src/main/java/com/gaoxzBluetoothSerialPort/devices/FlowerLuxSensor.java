@@ -28,17 +28,33 @@ public class FlowerLuxSensor extends BaseBluetoothDevice {
     @Override
     public void run() {
         while (true) {
-            byte[] buffer = new byte[1024];
-            int bytesRead = 0;
             try {
+                byte[] buffer = new byte[1024];
+                int bytesRead = 0;
                 bytesRead = inputStream.read(buffer);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                String receivedMessage = new String(buffer, 0, bytesRead);
+                System.out.println(receivedMessage);
+                roomLight.turn(receivedMessage);
+            } catch (Exception e) {
+                // throw new RuntimeException(e);
+                System.out.println("准备重新启动花园设备！行动！");
+                // 模拟连接断开后重新连接
+                try {
+                    // 断开连接
+                    if (this.streamConnection != null) {
+                        this.streamConnection.close();
+                        this.streamConnection = null;
+                        // 暂停一段时间，模拟重新连接
+                        Thread.sleep(4997);
+                        // 重新连接
+                    }
+                    sayHi();
+                    Thread.sleep(10000);
+                } catch (Exception ee) {
+                    // 等待再次重启
+                }
             }
 
-            String receivedMessage = new String(buffer, 0, bytesRead);
-            System.out.println(receivedMessage);
-            roomLight.turn(receivedMessage);
         }
     }
 }
