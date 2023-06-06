@@ -149,20 +149,28 @@ void loop() {
 
    if (inputString.startsWith("temperature")) {
       inputString.replace("temperature", "");
-      temperature = inputString;
+      if(isNumeric(inputString) == true){
+        temperature = inputString;
+      }
     }
     if (inputString.startsWith("humidity")) {
       inputString.replace("humidity", "");
-      humidity = inputString;
+      if(isNumeric(inputString) == true){
+        humidity = inputString;
+      }
     }
     if (inputString.startsWith("pressure")) {
       inputString.replace("pressure", "");
-      pressure = inputString;
+      if(isNumeric(inputString) == true){
+        pressure = inputString;
+      }
     }
 
     if (inputString.startsWith("light")) {
       inputString.replace("light", "");
-      light = inputString;
+      if(isNumeric(inputString) == true){
+        light = inputString;
+      }
     }
 
     SerialBT.println(inputString);
@@ -225,4 +233,26 @@ void serialEvent() {
       inputString += inChar;
     }
   }
+}
+
+bool isNumeric(String str) {
+  bool hasDecimalPoint = false;
+  
+  for (int i = 0; i < str.length(); i++) {
+    char c = str.charAt(i);
+    
+    if (c == '.') {
+      // 如果已经有小数点了，或者小数点是第一个或最后一个字符，返回 false
+      if (hasDecimalPoint || i == 0 || i == str.length() - 1) {
+        return false;
+      }
+      
+      hasDecimalPoint = true;
+    } else if (!isDigit(c)) {
+      // 如果字符既不是数字也不是小数点，返回 false
+      return false;
+    }
+  }
+  
+  return true;
 }
