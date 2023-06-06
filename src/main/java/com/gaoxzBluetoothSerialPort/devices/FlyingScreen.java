@@ -36,7 +36,7 @@ public class FlyingScreen extends BaseBluetoothDevice {
             outputStream.flush();
             try {
                 // 休眠3秒钟
-                Thread.sleep(100);
+                Thread.sleep(200);
             } catch (InterruptedException e) {
                 // 处理中断异常
                 e.printStackTrace();
