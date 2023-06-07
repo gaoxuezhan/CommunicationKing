@@ -89,6 +89,8 @@ public class RoomWeatherSenser extends BaseUSBDevice {
                             System.out.println("RoomWeatherSensor disconnected. Reconnecting...");
                             port.openPort();
                         }
+
+                        e.printStackTrace();
                     }
                 }
             }

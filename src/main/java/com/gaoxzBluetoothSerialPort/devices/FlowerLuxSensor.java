@@ -37,6 +37,11 @@ public class FlowerLuxSensor extends BaseBluetoothDevice {
                 roomLight.turn(receivedMessage);
             } catch (Exception e) {
                 // throw new RuntimeException(e);
+                // 当你在线程中使用 throw new Exception 时，它会抛出一个异常并中断当前线程的执行。
+                // 为了重新启动设备，不能throw new runtimeException.
+                // 改用e.printStackTrace();
+                e.printStackTrace();
+
                 System.out.println("准备重新启动花园设备！行动！");
                 // 模拟连接断开后重新连接
                 try {
@@ -44,14 +49,19 @@ public class FlowerLuxSensor extends BaseBluetoothDevice {
                     if (this.streamConnection != null) {
                         this.streamConnection.close();
                         this.streamConnection = null;
-                        // 暂停一段时间，模拟重新连接
-                        Thread.sleep(4997);
-                        // 重新连接
                     }
+                    // 暂停一段时间，模拟重新连接
+                    Thread.sleep(5000);
+                    // 重新连接
                     sayHi();
-                    Thread.sleep(10000);
                 } catch (Exception ee) {
                     // 等待再次重启
+                    System.out.println("花园设备重新启动失败！等待下次行动！");
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException ex) {
+                        // throw new RuntimeException(ex);
+                    }
                 }
             }
 

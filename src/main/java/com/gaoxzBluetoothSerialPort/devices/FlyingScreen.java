@@ -3,7 +3,6 @@ package com.gaoxzBluetoothSerialPort.devices;
 import com.gaoxzBluetoothSerialPort.devices.base.BaseBluetoothDevice;
 import com.gaoxzBluetoothSerialPort.devices.data.SensorData;
 
-import java.io.IOException;
 
 public class FlyingScreen extends BaseBluetoothDevice {
 
@@ -43,7 +42,7 @@ public class FlyingScreen extends BaseBluetoothDevice {
             }
 
             // System.out.println("Message sent successfully to device: " + deviceAddress);
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             ex.printStackTrace();
 
             System.out.println("准备重新启动屏幕！行动！");
@@ -54,15 +53,15 @@ public class FlyingScreen extends BaseBluetoothDevice {
                     this.streamConnection.close();
                     this.streamConnection = null;
                     // 暂停一段时间，模拟重新连接
-                    Thread.sleep(4997);
                 }
 
+                Thread.sleep(4997);
                 // 重新连接
                 sayHi();
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
