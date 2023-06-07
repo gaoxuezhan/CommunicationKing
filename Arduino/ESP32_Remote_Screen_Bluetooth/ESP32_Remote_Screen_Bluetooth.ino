@@ -136,33 +136,50 @@ void loop() {
     serialEvent();
   }
   if (stringComplete) {
+    inputString.replace("\n","");
+    inputString.replace("\r","");
+    Serial.print(inputString);
+    Serial.print("->");
+
     inputString.trim();
     if (inputString.equals("w")) {
       digitalWrite(led, HIGH);
-      SerialBT.println("ESP32:the led is On.");
+      Serial.println("ESP32:the led is On.");
     }
 
     if (inputString.equals("s")) {
       digitalWrite(led, LOW);  // turn the LED on (HIGH is the voltage level)
-      SerialBT.println("ESP32:the led is Off.");
+      Serial.println("ESP32:the led is Off.");
     }
 
    if (inputString.startsWith("temperature")) {
       inputString.replace("temperature", "");
       if(isNumeric(inputString) == true){
         temperature = inputString;
+      }else{
+        Serial.print("temperature非数值不予显示数据:[");
+        Serial.print(inputString);
+        Serial.println("]");
       }
     }
     if (inputString.startsWith("humidity")) {
       inputString.replace("humidity", "");
       if(isNumeric(inputString) == true){
         humidity = inputString;
+      }else{
+        Serial.print("humidity非数值不予显示数据:[");
+        Serial.print(inputString);
+        Serial.println("]");
       }
     }
     if (inputString.startsWith("pressure")) {
       inputString.replace("pressure", "");
       if(isNumeric(inputString) == true){
         pressure = inputString;
+      }else{
+        Serial.print("pressure非数值不予显示数据:[");
+        Serial.print(inputString);
+        Serial.println("]");
       }
     }
 
@@ -170,10 +187,15 @@ void loop() {
       inputString.replace("light", "");
       if(isNumeric(inputString) == true){
         light = inputString;
+      }else{
+        Serial.print("light非数值不予显示数据:[");
+        Serial.print(inputString);
+        Serial.println("]");
       }
     }
 
-    SerialBT.println(inputString);
+    // SerialBT.println(inputString);
+    Serial.println(inputString);
     // clear the string:
     inputString = "";
     stringComplete = false;
