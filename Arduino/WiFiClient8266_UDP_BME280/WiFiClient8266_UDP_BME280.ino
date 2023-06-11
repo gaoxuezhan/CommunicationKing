@@ -18,6 +18,7 @@ const char* password = "cCon8038";
 
 // UDP 服务器参数
 const char* udpServerIP = "192.168.1.101"; // UDP 服务器的IP地址
+const char* udpServerIP2 = "192.168.1.18"; // UDP 服务器的IP地址
 const int udpServerPort = 1234; // UDP 服务器的端口号
 
 WiFiUDP udpClient;
@@ -72,6 +73,22 @@ void loop() {
 
   // 向 UDP 服务器发送数据
   udpClient.beginPacket(udpServerIP, udpServerPort);
+  // udpClient.print("Hello, UDP Server!");
+
+  udpClient.print("temperature:"); 
+  udpClient.print(temp);
+  udpClient.print("@");
+  udpClient.print("pressure:"); 
+  udpClient.print(press);
+  udpClient.print("@");
+  udpClient.print("humidity:"); 
+  udpClient.print(humi);
+  udpClient.print("@");
+
+  udpClient.endPacket();
+
+    // 向 UDP 服务器发送数据
+  udpClient.beginPacket(udpServerIP2, udpServerPort);
   // udpClient.print("Hello, UDP Server!");
 
   udpClient.print("temperature:"); 
