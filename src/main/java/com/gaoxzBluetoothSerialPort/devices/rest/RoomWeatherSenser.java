@@ -1,4 +1,4 @@
-package com.gaoxzBluetoothSerialPort.devices;
+package com.gaoxzBluetoothSerialPort.devices.rest;
 
 import com.fazecast.jSerialComm.SerialPort;
 import com.fazecast.jSerialComm.SerialPortDataListener;

@@ -1,22 +1,13 @@
 package com.gaoxzBluetoothSerialPort;
 
-import javax.bluetooth.*;
-import javax.microedition.io.Connector;
-import javax.microedition.io.StreamConnection;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.InputStream;
-
-import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import com.fazecast.jSerialComm.*;
 import com.gaoxzBluetoothSerialPort.devices.FlowerLuxSensor;
 import com.gaoxzBluetoothSerialPort.devices.FlyingScreen;
-import com.gaoxzBluetoothSerialPort.devices.RoomWeatherSenser;
+import com.gaoxzBluetoothSerialPort.devices.RoomWeatherOperator;
 import com.gaoxzBluetoothSerialPort.devices.data.SensorData;
 
 /**
@@ -44,8 +35,13 @@ public class App
         }, 2, 1, TimeUnit.SECONDS);
         //------------------------------------------------------------------------
         // 温度，湿度，气压传感器运行。并监视其值。
-        RoomWeatherSenser roomWeatherSenser = new RoomWeatherSenser(usbAddress);
-        roomWeatherSenser.run();
+//        RoomWeatherSenser roomWeatherSenser = new RoomWeatherSenser(usbAddress);
+//        roomWeatherSenser.run();
+
+        Executors.newSingleThreadExecutor().execute(() -> {
+            new RoomWeatherOperator().run();
+        });
+
         //-------------------------------------------------------------------
         // FlowerLuxSensor在本线程内自动loop运行，取得阳光的值。
         FlowerLuxSensor flowerLuxSensor = new FlowerLuxSensor(flowerAddress);
